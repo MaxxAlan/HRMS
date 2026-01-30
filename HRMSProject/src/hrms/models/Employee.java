@@ -16,7 +16,7 @@ public abstract class Employee {
     private Date joinDate;
     protected double basicSalary; //protected để basicSalary xài chung cho các class trg package
     private boolean active;
-    private List<Attendance> attendance = new ArrayList<>();
+    private List<Attendance> attendanceList = new ArrayList<>();
     //List<Attendance>: List chứa các Attendance (Vd: mục chấm công+tráng thái+OT)
     //attendance: tên biến và là thuộc tính class Employee
     //new ArrayList<>(): tạo mới list mỗi khi có nhân viên mới (phải có new nếu ko là error)
@@ -33,6 +33,7 @@ public abstract class Employee {
         this.active = active;
     }
 
+    //Getter
     public String getId() {
         return id;
     }
@@ -41,6 +42,35 @@ public abstract class Employee {
         return name;
     }
 
+    public String getDepartment() {
+        return department;
+    }
+
+    public double getBasicSalary() {
+        return basicSalary;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public List<Attendance> getAttendanceList() {
+        return attendanceList;
+    }
+
+
+
+    //Setter
+    public void setName(String name) {
+        if(name != null && name.trim().isEmpty()){
+            this.name=name;
+        }
+    }
+    //name != null: không được là null
+    //.trim(): Xóa tất cả space ở ĐẦU và CUỐI chuỗi
+    //.isEmpty(): Kiểm tra xem chuỗi có rống ko ( boolean isEmpty() )
+    //Tên PHẢI tồn tại (không được null), Sau khi cắt space, tên KHÔNG được rỗng 
+    
     public void setDepartment(String department) {
         this.department = department;
     }
@@ -48,18 +78,53 @@ public abstract class Employee {
     public void setJobTitle(String jobTitle) {
         this.jobTitle = jobTitle;
     }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+    
     //ko setter id vì mỗi id là unique, ko thể tùy chỉnh sau khi tạo 
-
-    public void addAttendance(Attendance attendance) {
-        //code here
-    }
-
-    public void updateAttendance(Date date, String status, int overtimeHours) {
-        //code here
-    }
-
-    public abstract double caculateSalary(int month, int year);
+    
+    
+    //method
+    public abstract double calculateSalary();
     //Mọi nv đều phải có cách tính Salary, nhưng mỗi loại tính theo cách KHÁC NHAU
     //Tương tự như FullTimeEmployee có CÁCH TÍNH CỦA MIK, PartTimeEmployee cuz có CÁCH TÍNH CỦA MIK
 
+    @Override
+    public String toString() {
+        return id + "-" + name + "-" + department + "-" + jobTitle + "-" + basicSalary + "VND"
+                + countWorkingDays();
+    }
+    
+    public void addAttendance(Attendance attendance){
+        if(attendance!=null){
+            attendanceList.add(attendance);
+        }
+    }
+    //attendanceList: Danh sách lưu các điểm danh
+    //.add(): Phương thức thêm phần tử vào danh sách
+    //--> Thêm đối tượng attendance vào danh sách
+    
+    public int countWorkingDays(){
+        int countWorkings =0;
+        for (Attendance x : attendanceList) {
+            if ("Present".equals(x.getStatus())) {
+                countWorkings++;
+            }
+        }
+        return countWorkings;
+    }
+    
+    public boolean checkLowAttendance(int maxAbsentDays){
+        int absentCount=0;
+        for (Attendance x : attendanceList) {
+            if ("Absent".equals(x.getStatus())) {
+                absentCount++;
+            }
+        }
+        return absentCount > maxAbsentDays;
+    }
+    
+    
 }

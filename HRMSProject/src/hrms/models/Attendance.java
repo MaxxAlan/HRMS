@@ -5,13 +5,15 @@ import java.util.Date;
 public class Attendance {
     
     private Date date;
-    private String status;
-    private int getOvertime;
+    private String status;      //PRESENT, ABSENT, LEAVE
+    private int overtimeHours;
 
-    public Attendance(Date date, String status, int getOvertime) {
+    public Attendance(Date date, String status, int overtimeHours) {
         this.date = date;
-        this.status = status;
-        this.getOvertime = getOvertime;
+        setStatus(status);  //1 lọa phương thức Setter để thay đổi giá trị của status 
+                            //tái sử dụng cho bên dưới , khi cần sửa setStatus dưới thì constructor 
+                            //tự động dùng valid mới 
+        this.overtimeHours = overtimeHours;
     }
 
     public Date getDate() {
@@ -22,14 +24,29 @@ public class Attendance {
         return status;
     }
 
-    public int getGetOvertime() {
-        return getOvertime;
+    public int getOvertimeHours() {
+        return overtimeHours;
     }
 
     public void setStatus(String status) {
-        this.status = status;
+        if ("Present".equals(status) || "Absent".equals(status) 
+                || "Leave".equals(status)) {
+            this.status=status;
+        }else{
+            System.out.println("Error");
+        }
+    }
+    //  object1.equals(object2)
+    //  "Data".equals.(Scanner input)
+
+    public void setOvertimeHours(int overtimeHours) {
+        if(overtimeHours >= 0){
+            this.overtimeHours = overtimeHours;
+        }else{
+            System.out.println("Error");
+        }
     }
 
-    // chuk add PRESENT, ABSENT, LEAVE nha, cần bổ sung thêm cho status 
+    
     
 }
