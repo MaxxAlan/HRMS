@@ -58,7 +58,11 @@ public abstract class Employee {
         return attendanceList;
     }
 
-
+    public String getJobTitle() {
+        return jobTitle;
+    }
+    
+    
 
     //Setter
     public void setName(String name) {
@@ -108,8 +112,8 @@ public abstract class Employee {
     
     public int countWorkingDays(){
         int countWorkings =0;
-        for (Attendance x : attendanceList) {
-            if ("Present".equals(x.getStatus())) {
+        for (Attendance att : attendanceList) {
+            if ("Present".equals(att.getStatus())) {
                 countWorkings++;
             }
         }
@@ -118,8 +122,8 @@ public abstract class Employee {
     
     public boolean checkLowAttendance(int maxAbsentDays){
         int absentCount=0;
-        for (Attendance x : attendanceList) {
-            if ("Absent".equals(x.getStatus())) {
+        for (Attendance att : attendanceList) {
+            if ("Absent".equals(att.getStatus())) {
                 absentCount++;
             }
         }
