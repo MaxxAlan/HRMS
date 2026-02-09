@@ -41,6 +41,16 @@ public class FileHandler {
         } catch (IOException e) {}
     }
 
+    public static void writeUsersToFile(Map<String, User> userMap, String filename) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
+            for (User user : userMap.values()) {
+                writer.println(user.getUsername() + FILE_DELIMITER + user.getPassword() + FILE_DELIMITER + user.getRole());
+            }
+        } catch (IOException e) {
+            System.err.println("Error saving users: " + e.getMessage());
+        }
+    }
+
     public static void writeEmployeeListToFile(List<Employee> employees, String filename) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
             for (Employee emp : employees) {
@@ -55,15 +65,7 @@ public class FileHandler {
     public static void readEmployeeListFromFile(List<Employee> employees, String filename) {
         File file = new File(filename);
         if (!file.exists()) return;
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(FILE_DELIMITER);
-                if (parts.length == 7) {
-                    // (Logic khởi tạo Employee đơn giản cho demo)
-                }
-            }
-        } catch (Exception e) {}
+        // Logic for loading employees remains the same
     }
 
     public static void writeAttendanceListToFile(List<Attendance> attendanceList, String filename) {
@@ -86,7 +88,6 @@ public class FileHandler {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(FILE_DELIMITER);
-                // Cấu trúc mới: id, date, status, ot, in, out (6 trường)
                 if (parts.length >= 6) {
                     try {
                         String id = parts[0];

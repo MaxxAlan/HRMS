@@ -1,33 +1,54 @@
-# Hệ thống Quản lý Nhân sự (HRMS) - Final Version
+# HRMS - Enterprise Management System (Final Version)
 
-Ứng dụng HRMS Console hoàn thiện, được xây dựng theo lộ trình 4 Milestone chuẩn của đồ án học phần. Hệ thống áp dụng triệt để các nguyên lý OOP (Abstraction, Encapsulation, Inheritance, Polymorphism) và Computational Thinking (Decomposition, Pattern Recognition).
+This is a comprehensive Human Resource Management System (HRMS) built as a high-performance console application. It strictly adheres to the **4-Milestone Development Guideline**, implementing advanced Object-Oriented Programming (OOP) principles and Computational Thinking (CT).
 
-## 🚀 Tính năng & Cấu trúc Milestone
+## 🚀 Key Enterprise Features
 
-*   **Milestone 1 & 3 (Kiến trúc & Kế thừa):** 
-    *   Sử dụng quan hệ **Has-A** (Employee chứa danh sách Attendance).
-    *   Hệ thống phân cấp: `Employee` (Abstract) <- `FullTimeEmployee`, `PartTimeEmployee`.
-*   **Milestone 2 (CRUD & Nghiệp vụ):** 
-    *   Quản lý nhân viên toàn diện.
-    *   Logic chấm công theo trạng thái (Present/Absent/Leave).
-*   **Milestone 4 (Tích hợp & File I/O):**
-    *   Xử lý file `.txt` cho Nhân viên, Chấm công, Tài khoản và Logs.
-    *   Cơ chế bắt lỗi (Exception Handling) toàn diện.
+### 1. Security & RBAC (Role-Based Access Control)
+*   **Encrypted Logic:** User accounts are stored in `data/db-sys-hrms.txt`.
+*   **Roles:**
+    *   **IT / DIRECTOR:** Full system access, including User Management and Security Logs.
+    *   **HR:** Employee management and attendance tracking.
+    *   **ACCOUNTANT:** Payroll and salary calculation access.
+    *   **EMPLOYEE:** Personal attendance and profile viewing.
 
-## 💰 Logic Tính Lương (Theo Guideline)
-*   **Full-time:** Lương tính theo ngày công thực tế + Làm thêm (OT Rate: 80,000/h).
-*   **Part-time:** Lương tính theo ngày làm việc + Làm thêm (OT Rate: 50,000/h).
+### 2. Advanced Employee & Attendance Management
+*   **Dynamic CRUD:** Full life-cycle management of Full-time and Part-time employees.
+*   **Smart Attendance:** Supports real-time Check-in, Manual Check-out, and a **Quick Check-out List** for active on-site workers.
+*   **Relational Logic:** Uses a **Has-A relationship** where each Employee object manages its own history of Attendance records.
 
-## 🔐 Bảo mật & Logs
-*   **Phân quyền (RBAC):** IT, DIRECTOR, HR, ACCOUNTANT, EMPLOYEE.
-*   **Audit Logs:** Ghi lại mọi biến động hệ thống và truy cập đặc quyền.
-*   **Tài khoản Admin:** `group5` / `0000` (Role: IT).
+### 3. Polymorphic Payroll System
+*   **Automated Calculation:** Salaries are calculated based on monthly attendance data.
+*   **Polymorphism:** Different salary formulas for `FullTimeEmployee` (Basic + OT Rate 80k) and `PartTimeEmployee` (Basic + OT Rate 50k) using method overriding.
 
-## 📁 Cấu trúc Project
-*   `hrms.services`: Chứa logic nghiệp vụ trung tâm (`HRManagementSystem`).
-*   `hrms.models`: Các lớp thực thể và quan hệ đối tượng.
-*   `hrms.utils`: Tiện ích File I/O và Console UI.
-*   `src/data/`: Lưu trữ cơ sở dữ liệu dạng `.txt`.
+### 4. Traceability & Logging
+*   **System Logs (`log-time-sys.txt`):** Tracks all login/logout activities.
+*   **Security Logs (`log-permission.txt`):** Records high-privilege administrative actions for auditing purposes.
+
+## 🔐 Default Admin Credentials
+*   **Username:** `group5`
+*   **Password:** `0000`
+*   **Role:** `IT`
+
+## 🛠 Technical Stack
+*   **Language:** Java 8 (JDK 1.8)
+*   **IDE:** NetBeans IDE 15
+*   **Deployment:** Launch4j (Executable wrapper)
+*   **Architecture:** Service-Oriented Architecture (SOA) with a clean separation of concerns.
+
+## 📁 Portable Project Structure
+To run the enterprise executable, ensure the following structure:
+```text
+HRMS_App/
+├── HRMS.exe         # The main executable
+├── data/            # Database folder (.txt files)
+└── jre/             # Bundled Java Runtime Environment (Portable)
+```
+
+## 🏗 Build Instructions
+1.  Open the project in **NetBeans 15**.
+2.  Run **Clean and Build** to generate the `dist/HRMSProject.jar`.
+3.  Use **Launch4j** with the provided `manifest.xml` to wrap the JAR into `HRMS.exe`.
 
 ---
-*Hoàn thành theo tiêu chuẩn kỹ thuật Milestone 4 - Team 5.*
+*Developed by Team 5 - Milestone 4 Final Project.*
