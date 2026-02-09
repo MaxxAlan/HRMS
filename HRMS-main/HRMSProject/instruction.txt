@@ -1,58 +1,51 @@
 ========================================================================
-             HƯỚNG DẪN KỸ THUẬT & TRÌNH BÀY CODE - HRMS SYSTEM
+             HƯỚNG DẪN KỸ THUẬT NÂNG CAO - HRMS (MILESTONE 4)
 ========================================================================
 
-Chào các thành viên Team 5,
+Chào các bạn Team 5, 
 
-Tài liệu này trình bày cấu trúc mã nguồn và logic vận hành của hệ thống HRMS
-để các bạn có thể nắm bắt nhanh và tiếp tục phát triển các module tiếp theo.
+Hệ thống đã được refactor để khớp hoàn toàn với Class Diagram và Guideline 
+của giảng viên. Dưới đây là các thay đổi quan trọng các bạn cần lưu ý:
 
-1. CẤU TRÚC PACKAGE (hrms.*)
+1. KIẾN TRÚC DỊCH VỤ (SERVICE LAYER)
 ------------------------------------------------------------------------
-- hrms.HRMS: Lớp điều khiển chính (Main Controller). Chứa logic điều hướng 
-  menu, kiểm tra quyền hạn (checkPermission) và luồng hoạt động chính.
-- hrms.models: Chứa các lớp thực thể (Entity classes).
-    + Employee (Abstract): Lớp cơ sở cho nhân viên.
-    + FullTimeEmployee / PartTimeEmployee: Các lớp con cụ thể.
-    + User: Thông tin tài khoản đăng nhập và quyền hạn.
-    + Attendance: Thông tin một lượt chấm công.
-- hrms.utils: Các lớp tiện ích.
-    + FileHandler: Chịu trách nhiệm Đọc/Ghi mọi loại file (.txt). Tất cả 
-      logic persistence tập trung tại đây.
-    + ConsoleUI: Chứa các hàm hỗ trợ hiển thị (Header, Error, Success) 
-      và nhập liệu (Scanner wrapper) để tránh lỗi trôi lệnh.
+- Đã thêm package `hrms.services`.
+- Lớp `HRManagementSystem` hiện là nơi quản lý tập trung toàn bộ Employee 
+  thông qua một Map. Các module khác nên gọi qua Service này thay vì 
+  thao tác trực tiếp trên List ở Main.
 
-2. LOGIC BẢO MẬT & PHÂN QUYỀN
+2. QUAN HỆ HAS-A (COMPOSITION)
 ------------------------------------------------------------------------
-Hệ thống sử dụng cơ chế RBAC (Role-Based Access Control) đơn giản:
-- Khi đăng nhập, đối tượng `User` được lưu vào biến `loggedInUser`.
-- Hàm `checkPermission(String... roles)` sẽ kiểm tra vai trò hiện tại.
-- Lưu ý: Vai trò 'IT' và 'DIRECTOR' được code cứng là SUPERUSER, luôn có 
-  quyền qua mọi cửa kiểm tra.
+- Trước đây, Attendance được lưu rời rạc. Hiện tại, mỗi object `Employee` 
+  đều sở hữu một `List<Attendance>` bên trong.
+- Khi một nhân viên check-in, object `Attendance` mới sẽ được add trực tiếp 
+  vào List của nhân viên đó. Điều này cho phép tính lương chính xác dựa 
+  trên lịch sử của từng cá nhân.
 
-3. HỆ THỐNG DỮ LIỆU & LOGS
+3. ĐA HÌNH TRONG TÍNH LƯƠNG
 ------------------------------------------------------------------------
-- Dữ liệu được lưu trong `src/data/` dưới dạng CSV (dấu phẩy ngăn cách).
-- Hệ thống log sử dụng chế độ 'Append' (Ghi nối tiếp), không ghi đè:
-    + Log System: Theo dõi Login/Logout.
-    + Log Permission: Theo dõi các hành động nhạy cảm của Admin.
+- Phương thức `calculateSalary(int month, int year)` là abstract tại lớp 
+  cha `Employee`.
+- Lớp `FullTimeEmployee` và `PartTimeEmployee` ghi đè logic này với các 
+  hệ số OVERTIME_RATE khác nhau (80k và 50k).
+- Khi tính lương, chúng ta chỉ cần gọi `emp.calculateSalary(...)` mà không 
+  cần quan tâm đó là loại nhân viên nào.
 
-4. QUY TẮC PHÁT TRIỂN TIẾP THEO (CONVENTIONS)
+4. XỬ LÝ FILE & LOGS (MILESTONE 4)
 ------------------------------------------------------------------------
-- Giao diện: Luôn dùng `ConsoleUI.displayHeader()` cho menu mới.
-- Nhập liệu: Luôn dùng `ConsoleUI.promptForNonEmptyString()` để đảm bảo 
-  không bị lỗi bộ đệm Scanner.
-- Dữ liệu: Nếu thêm trường mới vào Model, phải cập nhật logic Đọc/Ghi 
-  tương ứng trong `FileHandler`.
+- `FileHandler` đã được nâng cấp để hỗ trợ ghi Log dưới dạng Append.
+- Lưu ý khi đọc file: Cần đảm bảo parse đúng thứ tự các trường để không 
+  gây lỗi NumberFormatException.
 
-5. CÁCH BUILD & CHẠY
+5. CÁC HÀM TIỆN ÍCH MỚI TRONG EMPLOYEE
 ------------------------------------------------------------------------
-- Mở project bằng NetBeans 15.
-- Nhấn 'Clean and Build' để tạo file .jar trong thư mục dist.
-- Tài khoản Test: group3 / 0000 (Quyền IT).
+- `calculateWorkingDays(month, year)`: Đếm số ngày có status 'Present'.
+- `calculateTotalOvertime(month, year)`: Tổng hợp số giờ OT trong tháng.
 
-Mọi thắc mắc về logic xử lý file hoặc phân quyền, các bạn vui lòng xem 
-chi tiết tại hrms.utils.FileHandler và hrms.HRMS.
+Các bạn có thể dựa vào các hàm này để viết thêm báo cáo "Nhân viên tích cực"
+hoặc "Nhân viên vắng mặt nhiều" cho Milestone cuối cùng.
 
-Chúc team làm việc hiệu quả!
+Chúc team bảo vệ đồ án thành công!
+
+- Tài khoản Test: group5 / 0000 (Quyền IT).
 ========================================================================

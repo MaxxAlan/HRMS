@@ -1,0 +1,5 @@
+EMP001,Nguyen Van A,IT,Senior Dev,25000000,01/01/2024,true
+EMP002,Tran Thi B,HR,Manager,20000000,15/05/2024,true
+EMP003,Le Van C,IT,Designer,15000000,10/08/2024,true
+EMP004,Pham Thi D,Sales,Staff,10000000,05/11/2024,false
+EMP005,Hoang Van E,IT,Intern,5000000,01/02/2025,true

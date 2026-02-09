@@ -37,7 +37,7 @@ public class HRMS {
     static {
         FileHandler.readUsersFromFile(userDatabase, USER_DB_FILE);
         if (userDatabase.isEmpty()) {
-            userDatabase.put("group3", new User("group3", "0000", "IT"));
+            userDatabase.put("group5", new User("group5", "0000", "IT"));
         }
         FileHandler.readEmployeeListFromFile(employeeList, EMPLOYEE_DATA_FILE);
         FileHandler.readAttendanceListFromFile(attendanceList, ATTENDANCE_DATA_FILE);

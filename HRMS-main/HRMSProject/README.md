@@ -1,50 +1,33 @@
-# Hệ thống Quản lý Nhân sự (HRMS) - Enterprise Edition
+# Hệ thống Quản lý Nhân sự (HRMS) - Final Version
 
-Đây là một ứng dụng quản lý nhân sự chuyên nghiệp chạy trên nền tảng Console (Dòng lệnh), được thiết kế theo cấu trúc doanh nghiệp với hệ thống bảo mật và phân quyền chặt chẽ.
+Ứng dụng HRMS Console hoàn thiện, được xây dựng theo lộ trình 4 Milestone chuẩn của đồ án học phần. Hệ thống áp dụng triệt để các nguyên lý OOP (Abstraction, Encapsulation, Inheritance, Polymorphism) và Computational Thinking (Decomposition, Pattern Recognition).
 
-## 🚀 Tính năng chính
+## 🚀 Tính năng & Cấu trúc Milestone
 
-### 1. Bảo mật & Phân quyền (Security & Authorization)
-*   **Xác thực người dùng:** Đăng nhập thông qua tài khoản lưu trữ trong cơ sở dữ liệu file (`db-sys-hrms.txt`).
-*   **Phân quyền dựa trên vai trò (RBAC):**
-    *   **IT & DIRECTOR:** Toàn quyền truy cập mọi module, bao gồm cả hệ thống Log bảo mật.
-    *   **HR:** Quản lý nhân viên, chấm công và xem một số báo cáo.
-    *   **ACCOUNTANT:** Truy cập module Quản lý Lương.
-    *   **EMPLOYEE:** Chỉ thực hiện chấm công cá nhân.
+*   **Milestone 1 & 3 (Kiến trúc & Kế thừa):** 
+    *   Sử dụng quan hệ **Has-A** (Employee chứa danh sách Attendance).
+    *   Hệ thống phân cấp: `Employee` (Abstract) <- `FullTimeEmployee`, `PartTimeEmployee`.
+*   **Milestone 2 (CRUD & Nghiệp vụ):** 
+    *   Quản lý nhân viên toàn diện.
+    *   Logic chấm công theo trạng thái (Present/Absent/Leave).
+*   **Milestone 4 (Tích hợp & File I/O):**
+    *   Xử lý file `.txt` cho Nhân viên, Chấm công, Tài khoản và Logs.
+    *   Cơ chế bắt lỗi (Exception Handling) toàn diện.
 
-### 2. Quản lý Nhân viên (Employee Management)
-*   Thêm mới nhân viên (Hỗ trợ Full-time và Part-time).
-*   Cập nhật thông tin và vô hiệu hóa (Soft delete) nhân viên.
-*   Tìm kiếm và hiển thị danh sách nhân viên đang hoạt động.
+## 💰 Logic Tính Lương (Theo Guideline)
+*   **Full-time:** Lương tính theo ngày công thực tế + Làm thêm (OT Rate: 80,000/h).
+*   **Part-time:** Lương tính theo ngày làm việc + Làm thêm (OT Rate: 50,000/h).
 
-### 3. Chấm công (Attendance Management)
-*   Ghi nhận giờ vào (Check-in) và giờ ra (Check-out) theo thời gian thực.
-*   Lưu trữ lịch sử chấm công chi tiết theo từng ngày.
+## 🔐 Bảo mật & Logs
+*   **Phân quyền (RBAC):** IT, DIRECTOR, HR, ACCOUNTANT, EMPLOYEE.
+*   **Audit Logs:** Ghi lại mọi biến động hệ thống và truy cập đặc quyền.
+*   **Tài khoản Admin:** `group5` / `0000` (Role: IT).
 
-### 4. Hệ thống Logs (Logging System)
-*   **System Log (`log-time-sys.txt`):** Ghi lại lịch sử đăng nhập/đăng xuất và các thao tác check-in.
-*   **Security Log (`log-permission.txt`):** Ghi lại các truy cập đặc quyền của ADMIN/Giám đốc để phục vụ kiểm toán.
-
-### 5. Lương & Báo cáo (Salary & Reports)
-*   Tính toán bảng lương dựa trên lương cơ bản và dữ liệu chấm công.
-*   Thống kê số lượng nhân sự và ngân sách lương.
-
-## 🛠 Công nghệ sử dụng
-*   **Ngôn ngữ:** Java 8 (JDK 1.8)
-*   **IDE:** NetBeans IDE 15
-*   **Lưu trữ:** Plain text file (.txt) với cấu trúc Delimiter.
-
-## 📁 Cấu trúc thư mục dữ liệu (`src/data/`)
-*   `employees.txt`: Dữ liệu hồ sơ nhân viên.
-*   `attendance.txt`: Nhật ký chấm công.
-*   `db-sys-hrms.txt`: Danh sách tài khoản người dùng và quyền hạn.
-*   `log-time-sys.txt`: Nhật ký hoạt động hệ thống.
-*   `log-permission.txt`: Nhật ký truy cập đặc quyền.
-
-## 🔐 Tài khoản Admin mặc định
-*   **Username:** `group3`
-*   **Password:** `0000`
-*   **Role:** `IT` (Toàn quyền)
+## 📁 Cấu trúc Project
+*   `hrms.services`: Chứa logic nghiệp vụ trung tâm (`HRManagementSystem`).
+*   `hrms.models`: Các lớp thực thể và quan hệ đối tượng.
+*   `hrms.utils`: Tiện ích File I/O và Console UI.
+*   `src/data/`: Lưu trữ cơ sở dữ liệu dạng `.txt`.
 
 ---
-*Dự án được phát triển bởi Team 5 - 2026.*
+*Hoàn thành theo tiêu chuẩn kỹ thuật Milestone 4 - Team 5.*
