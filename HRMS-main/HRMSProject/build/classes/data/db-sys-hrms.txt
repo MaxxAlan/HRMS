@@ -1,0 +1,5 @@
+group3,0000,IT
+giamdoc,1234,DIRECTOR
+hr_manager,1234,HR
+accountant,1234,ACCOUNTANT
+nhanvien1,1234,EMPLOYEE

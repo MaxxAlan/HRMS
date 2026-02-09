@@ -1,0 +1,58 @@
+========================================================================
+             HƯỚNG DẪN KỸ THUẬT & TRÌNH BÀY CODE - HRMS SYSTEM
+========================================================================
+
+Chào các thành viên Team 5,
+
+Tài liệu này trình bày cấu trúc mã nguồn và logic vận hành của hệ thống HRMS
+để các bạn có thể nắm bắt nhanh và tiếp tục phát triển các module tiếp theo.
+
+1. CẤU TRÚC PACKAGE (hrms.*)
+------------------------------------------------------------------------
+- hrms.HRMS: Lớp điều khiển chính (Main Controller). Chứa logic điều hướng 
+  menu, kiểm tra quyền hạn (checkPermission) và luồng hoạt động chính.
+- hrms.models: Chứa các lớp thực thể (Entity classes).
+    + Employee (Abstract): Lớp cơ sở cho nhân viên.
+    + FullTimeEmployee / PartTimeEmployee: Các lớp con cụ thể.
+    + User: Thông tin tài khoản đăng nhập và quyền hạn.
+    + Attendance: Thông tin một lượt chấm công.
+- hrms.utils: Các lớp tiện ích.
+    + FileHandler: Chịu trách nhiệm Đọc/Ghi mọi loại file (.txt). Tất cả 
+      logic persistence tập trung tại đây.
+    + ConsoleUI: Chứa các hàm hỗ trợ hiển thị (Header, Error, Success) 
+      và nhập liệu (Scanner wrapper) để tránh lỗi trôi lệnh.
+
+2. LOGIC BẢO MẬT & PHÂN QUYỀN
+------------------------------------------------------------------------
+Hệ thống sử dụng cơ chế RBAC (Role-Based Access Control) đơn giản:
+- Khi đăng nhập, đối tượng `User` được lưu vào biến `loggedInUser`.
+- Hàm `checkPermission(String... roles)` sẽ kiểm tra vai trò hiện tại.
+- Lưu ý: Vai trò 'IT' và 'DIRECTOR' được code cứng là SUPERUSER, luôn có 
+  quyền qua mọi cửa kiểm tra.
+
+3. HỆ THỐNG DỮ LIỆU & LOGS
+------------------------------------------------------------------------
+- Dữ liệu được lưu trong `src/data/` dưới dạng CSV (dấu phẩy ngăn cách).
+- Hệ thống log sử dụng chế độ 'Append' (Ghi nối tiếp), không ghi đè:
+    + Log System: Theo dõi Login/Logout.
+    + Log Permission: Theo dõi các hành động nhạy cảm của Admin.
+
+4. QUY TẮC PHÁT TRIỂN TIẾP THEO (CONVENTIONS)
+------------------------------------------------------------------------
+- Giao diện: Luôn dùng `ConsoleUI.displayHeader()` cho menu mới.
+- Nhập liệu: Luôn dùng `ConsoleUI.promptForNonEmptyString()` để đảm bảo 
+  không bị lỗi bộ đệm Scanner.
+- Dữ liệu: Nếu thêm trường mới vào Model, phải cập nhật logic Đọc/Ghi 
+  tương ứng trong `FileHandler`.
+
+5. CÁCH BUILD & CHẠY
+------------------------------------------------------------------------
+- Mở project bằng NetBeans 15.
+- Nhấn 'Clean and Build' để tạo file .jar trong thư mục dist.
+- Tài khoản Test: group3 / 0000 (Quyền IT).
+
+Mọi thắc mắc về logic xử lý file hoặc phân quyền, các bạn vui lòng xem 
+chi tiết tại hrms.utils.FileHandler và hrms.HRMS.
+
+Chúc team làm việc hiệu quả!
+========================================================================

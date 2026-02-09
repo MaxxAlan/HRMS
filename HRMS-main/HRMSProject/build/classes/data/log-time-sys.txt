@@ -1,0 +1,2 @@
+09/02/2026 13:19:43 | User: group3 | Status: LOGIN_SUCCESS
+09/02/2026 13:21:24 | User: group3 | Status: LOGIN
