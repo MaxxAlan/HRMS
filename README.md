@@ -1,359 +1,101 @@
-# HƯỚNG DẪN HRMS ĐƠN GIẢN
+# HRMS — Hệ thống quản lý nhân sự
 
-## 📌 ĐẶC ĐIỂM CODE ĐƠN GIẢN
+Mô tả ngắn
+- HRMS — Phần mềm quản lý nhân lực công ty. (Repo: MaxxAlan/HRMS)
+- Ngôn ngữ chính: Java (100%)
 
-Code này được viết **CỰC KỲ ĐỠN GIẢN** cho người mới học Java:
+Tóm tắt trạng thái hiện tại
+- Loại dự án: Ứng dụng console Java (NetBeans / Ant project).
+- Java target: 1.8 (xác định từ `nbproject/project.properties`).
+- Build: Ant / NetBeans (file: `HRMSProject/build.xml`, `nbproject/`).
+- Trạng thái tổng quát: Đã có khung cơ bản của backend console và mô hình dữ liệu; tính năng chính chấp nhận đầu vào qua console. Nhiều module trợ giúp, ngoại lệ, và persistence chưa triển khai đầy đủ.
+  - Giai đoạn: Development (proto / working prototype trên console).
+  - Không có CI, không có tests tự động (chưa thấy `src/test` thực thi).
+  - Chưa có cơ chế lưu trữ dữ liệu (hiện tại lưu trong memory: `List<Employee>`).
 
-✅ **Không dùng Helper Methods phức tạp** - Tất cả code viết trực tiếp trong từng function
-✅ **Dùng if-else thay vì switch** - Dễ đọc hơn cho người mới
-✅ **Validate đơn giản** - Chỉ check những điều cần thiết
-✅ **Không có try-catch lồng nhau** - Mỗi chỗ 1 try-catch đơn giản
-✅ **Comment ít hơn** - Chỉ comment chỗ quan trọng
-✅ **Format giống y PDF** - Theo đúng yêu cầu đề bài
+Bằng chứng từ mã nguồn (những file chính đã kiểm tra)
+- Project config
+  - `HRMSProject/build.xml` (Ant wrapper cho NetBeans)
+  - `HRMSProject/nbproject/project.properties` (javac.source = 1.8)
+- Entry point
+  - `HRMSProject/src/hrms/HRMS.java`
+    - Menu console: Employee Management hiện hoạt. Các menu Attendance / Salary / Reports được comment out.
+    - Lưu dữ liệu trong memory: `private static List<Employee> employeeList = new ArrayList<>();`
+    - Hỗ trợ: Add, Update, Remove (deactivate), View, Search nhân viên.
+- Models
+  - `HRMSProject/src/hrms/models/Employee.java` (abstract, fields + attendance list, toString, countWorkingDays, addAttendance, abstract calculateSalary)
+  - `HRMSProject/src/hrms/models/Attendance.java` (date, status, overtimeHours, validation simple)
+  - `HRMSProject/src/hrms/models/FullTimeEmployee.java` (implements calculateSalary)
+  - `HRMSProject/src/hrms/models/PartTimeEmployee.java` (implements calculateSalary)
+- Exceptions (chưa triển khai nội dung)
+  - `HRMSProject/src/hrms/exceptions/AttendanceException.java` (empty class)
+  - `HRMSProject/src/hrms/exceptions/InvalidEmployeeException.java` (empty class)
+- Utils (chưa triển khai)
+  - `HRMSProject/src/hrms/utils/ConsoleUI.java` (empty)
+  - `HRMSProject/src/hrms/utils/FileHandler.java` (empty)
+  - `HRMSProject/src/hrms/utils/Validator.java` (empty)
 
-## 🎯 5 CHỨC NĂNG ĐÃ LÀM
+Những gì đã hoàn thành (chi tiết)
+- Mô hình dữ liệu cơ bản: Employee (abstract), Attendance, FullTimeEmployee, PartTimeEmployee — có logic tính lương cơ bản dựa trên overtime và absence.
+- Giao diện console cơ bản (`HRMS.java`) cho quản lý nhân viên:
+  - Thêm nhân viên (Full-time / Part-time), validate đơn giản (id trống, trùng, salary > 0, ngày join parse).
+  - Cập nhật department/jobTitle.
+  - Deactivate nhân viên thay vì xóa.
+  - Xem danh sách nhân viên (chỉ active).
+  - Tìm kiếm theo tên.
+- Có cấu hình project NetBeans/Ant để build.
 
-### 1️⃣ Add Employee (Thêm nhân viên)
+Những phần còn thiếu / cần hoàn thiện
+- Persistence: lưu dữ liệu vào file/DB (hiện chỉ lưu trong memory).
+- Attendance UI & management: menu attendance được comment — cần implement (thêm điểm danh, sửa, xóa, import/export).
+- Salary management UI: menu salary được comment — cần implement xuất phiếu lương, lịch sử lương.
+- Reports: báo cáo tổng hợp (tổng lương, chấm công, vắng nhiều...) chưa có.
+- Exception classes: `AttendanceException`, `InvalidEmployeeException` nên extend `Exception` hoặc `RuntimeException` và chứa logic.
+- Utils: `ConsoleUI`, `FileHandler`, `Validator` hiện rỗng — cần triển khai để tái sử dụng.
+- Tests: không thấy test unit/integration — cần thêm test (JUnit).
+- CI/CD: không thấy `.github/workflows` — đề xuất thêm pipeline build + test.
+- Documentation/API: thiếu docs, hướng dẫn cài đặt chi tiết, file `.env.example` nếu cần cấu hình DB.
+- CODEOWNERS / quy trình duyệt PR: không thấy file -> chưa có người duyệt được chỉ định.
+
+Ưu tiên công việc tiếp theo (gợi ý)
+1. Triển khai persistence tối thiểu:
+   - Option A: Lưu file JSON/CSV thông qua `FileHandler`.
+   - Option B: Kết nối DB (H2 or SQLite for local, hoặc MySQL/Postgres).
+2. Triển khai Attendance management (menu và CRUD).
+3. Hoàn thiện Salary management & generate payslip.
+4. Viết unit tests cho business logic (calculateSalary, countWorkingDays, validator).
+5. Thiết lập CI (GitHub Actions): build → test → (optional) code style.
+6. Thêm CODEOWNERS để xác định người duyệt PR.
+7. Refactor utils và xử lý exceptions.
+
+Hướng dẫn build & chạy (dựa trên cấu trúc hiện có)
+- Yêu cầu:
+  - Java JDK 8
+  - Ant (nếu dùng build.xml), hoặc mở bằng NetBeans 8+/NetBeans 11+ (project NetBeans)
+- Build & chạy bằng Ant:
+  - Từ thư mục `HRMSProject`:
+    - Build: `ant` (hoặc `ant jar`)
+    - Chạy (nếu IDE không dùng Compile-on-Save): `ant -f build.xml run`
+  - Hoặc mở project bằng NetBeans và nhấn Run.
+- Chạy trực tiếp (IDE):
+  - Mở `HRMSProject` trong NetBeans, run project; main class: `hrms.HRMS`.
+
+Gợi ý về quy trình duyệt mã (Ai duyệt)
+- Hiện tại repo không có `.github/CODEOWNERS` hay file tương tự => không có approver được chỉ định tự động.
+- Đề xuất mẫu cơ bản (tùy chỉnh theo team):
+  - Tech Lead: người chịu trách nhiệm code-review chính.
+  - QA: kiểm thử trước khi merge vào `main`.
+  - Quy tắc merge: ít nhất 1 approver, CI pass, không merge trực tiếp vào `main` (dùng branch + PR).
+- Mẫu file CODEOWNERS (ví dụ đề xuất) — thêm vào `.github/CODEOWNERS` hoặc `docs/`:
+  - Người duyệt mặc định: @MaxxAlan (owner). Thay thế bằng account GitHub thực tế của Tech Lead/QA khi có.
+
+Gợi ý về file CODEOWNERS (mẫu)
 ```
-Nhập theo thứ tự:
-- Employee ID
-- Full Name  
-- Department
-- Job Title
-- Type (Full-time/Part-time)
-- Date of Joining (dd/MM/yyyy)
-- Basic Salary
-
-Sau đó chọn:
-[1] Save [2] Cancel
-```
-
-**Validate:**
-- ID không được rỗng
-- ID không được trùng (BR1)
-- Name không được rỗng (BR2)
-- Department không được rỗng (BR2)
-- Date phải đúng format
-- Salary phải > 0
-
-### 2️⃣ Update Employee (Cập nhật)
-```
-Nhập Employee ID
-→ Hiển thị thông tin hiện tại
-→ Nhập thông tin mới (để trống = skip)
-→ [1] Update [2] Cancel
-```
-
-**Có thể cập nhật:**
-- Department
-- Job Title
-
-**Không thể cập nhật:**
-- ID (theo BR1)
-
-### 3️⃣ Remove Employee (Xóa nhân viên)
-```
-Nhập Employee ID
-→ Xác nhận yes/no
-→ Deactivate (không xóa hẳn)
-```
-
-### 4️⃣ View All Employees (Xem danh sách)
-```
-Hiển thị dạng bảng:
-ID | Name | Department | Job Title | Salary
-```
-
-### 5️⃣ Search Employee (Tìm kiếm)
-```
-Chọn tìm theo:
-1. Name
-2. Department  
-3. Job Title
-
-Nhập từ khóa → Hiển thị kết quả
-```
-
-## 💡 SO SÁNH 2 PHIÊN BẢN
-
-### Version 1 (HRMS.java) - PHỨC TẠP HƠN
-```java
-// Dùng helper methods
-private static String inputEmployeeId() {
-    while (true) {
-        // ... nhiều code ...
-    }
-}
-
-// Dùng switch-case
-switch (choice) {
-    case "1": addEmployee(); break;
-    case "2": searchEmployee(); break;
-    ...
-}
-```
-
-### Version 2 (HRMS_Simple.java) - ĐƠN GIẢN
-```java
-// Không dùng helper, viết trực tiếp
-System.out.print("Employee ID: ");
-String id = sc.nextLine().trim();
-if (id.isEmpty()) {
-    System.out.println("Error!");
-    return;
-}
-
-// Dùng if-else
-if (choice.equals("1")) {
-    addEmployee();
-} else if (choice.equals("2")) {
-    searchEmployee();
-}
+# Các owner/approver mặc định
+# Format: <pattern> <owner>
+# Ví dụ: toàn repo do @MaxxAlan duyệt; thay bằng team hoặc người cụ thể nếu cần
+* @MaxxAlan
 ```
 
-## 📖 CODE DỄ HIỂU NHƯ THẾ NÀO?
-
-### Ví dụ 1: Thêm nhân viên
-```java
-static void addEmployee() {
-    // Bước 1: Nhập ID
-    System.out.print("Employee ID: ");
-    String id = sc.nextLine().trim();
-    
-    // Bước 2: Check rỗng
-    if (id.isEmpty()) {
-        System.out.println("Error!");
-        return; // Dừng luôn, không làm gì nữa
-    }
-    
-    // Bước 3: Check trùng
-    for (Employee emp : employeeList) {
-        if (emp.getId().equals(id)) {
-            System.out.println("ID exists!");
-            return;
-        }
-    }
-    
-    // Bước 4: Nhập name...
-    // ... cứ thế tiếp tục
-}
-```
-
-**Dễ hiểu vì:**
-- Từng bước rõ ràng
-- Không có method phụ
-- Có lỗi là return ngay
-- Đọc từ trên xuống dưới
-
-### Ví dụ 2: Tìm nhân viên
-```java
-// Không dùng findEmployeeById(id)
-// Mà viết trực tiếp:
-
-Employee emp = null;
-for (Employee e : employeeList) {
-    if (e.getId().equals(id)) {
-        emp = e;
-        break;
-    }
-}
-
-if (emp == null) {
-    System.out.println("Not found!");
-}
-```
-
-## 🔧 CÁC ĐIỂM LƯU Ý
-
-### 1. Static variables
-```java
-static List<Employee> employeeList = new ArrayList<>();
-static Scanner sc = new Scanner(System.in);
-```
-- Dùng `static` để dùng chung trong tất cả methods
-- Không cần tạo object HRMS
-
-### 2. Validation đơn giản
-```java
-// Check rỗng
-if (id.isEmpty()) {
-    System.out.println("Error!");
-    return;
-}
-
-// Check trùng
-for (Employee emp : employeeList) {
-    if (emp.getId().equals(id)) {
-        System.out.println("Error!");
-        return;
-    }
-}
-```
-
-### 3. Try-catch đơn giản
-```java
-try {
-    joinDate = dateFormat.parse(dateStr);
-} catch (Exception e) {
-    System.out.println("Error: Invalid date!");
-    return;
-}
-```
-
-### 4. Format output
-```java
-// Format số có dấu phẩy
-String.format("%,.0f", emp.getBasicSalary())
-// 10000000 → 10,000,000
-
-// Format bảng với printf
-System.out.printf("%-8s %-20s %-15s%n", "ID", "Name", "Department");
-```
-
-## ⚙️ CÁCH CHẠY
-
-```bash
-# 1. Compile các class models trước
-javac hrms/models/*.java
-
-# 2. Compile HRMS_Simple
-javac hrms/HRMS_Simple.java
-
-# 3. Run
-java hrms.HRMS_Simple
-```
-
-## 📝 VÍ DỤ SỬ DỤNG
-
-### Test Case 1: Thêm nhân viên Full-time
-```
-Employee ID: E01
-Full Name: Nguyen Van An
-Department: IT
-Job Title: Software Engineer
-Type: Full-time
-Date of Joining: 01/03/2023
-Basic Salary: 12000000
-[1] Save [2] Cancel
-Choose: 1
-
-→ Output: Employee added successfully.
-```
-
-### Test Case 2: Thêm nhân viên Part-time
-```
-Employee ID: E02
-Full Name: Tran Thi Hoa
-Department: HR
-Job Title: HR Officer
-Type: Part-time
-Date of Joining: 15/06/2023
-Basic Salary: 10000000
-[1] Save [2] Cancel
-Choose: 1
-
-→ Output: Employee added successfully.
-```
-
-### Test Case 3: Update thông tin
-```
-Enter Employee ID to update: E01
-
-Current Information:
-Name: Nguyen Van An
-Department: IT
-Job Title: Software Engineer
-Basic Salary: 12,000,000
-
-Enter new Department (leave blank to skip): R&D
-Enter new Job Title (leave blank): Senior Engineer
-
-[1] Update [2] Cancel
-Choose: 1
-
-→ Output: Employee updated successfully.
-```
-
-### Test Case 4: Tìm kiếm theo tên
-```
-Search by:
-1. Name
-2. Department
-3. Job Title
-Choose (1-3): 1
-
-Enter name: nguyen
-
---- SEARCH RESULTS ---
-E01 - Nguyen Van An - R&D
-Found: 1 employee(s)
-```
-
-## ❌ CÁC LỖI THƯỜNG GẶP
-
-### Lỗi 1: ID trùng
-```
-Employee ID: E01
-Error: ID already exists!
-```
-
-### Lỗi 2: Name rỗng
-```
-Full Name: 
-Error: Name cannot be empty!
-```
-
-### Lỗi 3: Date sai format
-```
-Date of Joining: 2023-01-15
-Error: Invalid date format!
-
-✓ Đúng: 15/01/2023
-```
-
-### Lỗi 4: Salary không hợp lệ
-```
-Basic Salary: abc
-Error: Invalid salary!
-
-Basic Salary: -1000
-Error: Salary must be greater than 0!
-```
-
-## 🎓 HỌC ĐƯỢC GÌ TỪ CODE NÀY?
-
-1. **Cấu trúc Menu đơn giản** với if-else
-2. **Validate input cơ bản** (rỗng, trùng, format)
-3. **Dùng ArrayList** để lưu danh sách
-4. **Dùng for-each loop** để duyệt danh sách
-5. **Parse Date** từ String
-6. **Format output** đẹp với printf
-7. **Try-catch** xử lý exception cơ bản
-
-## 🆚 KHI NÀO DÙNG VERSION NÀO?
-
-**Dùng HRMS_Simple.java nếu:**
-- ✅ Mới học Java
-- ✅ Muốn code ngắn gọn
-- ✅ Chưa quen helper methods
-- ✅ Chỉ cần pass assignment
-
-**Dùng HRMS.java nếu:**
-- ✅ Muốn code chuyên nghiệp hơn
-- ✅ Hiểu về refactoring
-- ✅ Muốn tái sử dụng code
-- ✅ Làm project thật
-
-## 💪 THÁCH THỨC TIẾP THEO
-
-Sau khi hiểu code này, bạn có thể:
-
-1. **Thêm Attendance Management** (BR3, BR4, BR5)
-2. **Thêm Salary Management** (BR7, BR8, BR9)
-3. **Thêm Reports** (BR12, BR13)
-4. **Lưu file** (File I/O)
-5. **Refactor** thành code đẹp hơn
-
----
-
-**Chúc bạn học tốt! 🚀**
+Kiểm tra bảo mật & privacy
+- Trong `nbproject/private/private.properties` có đường dẫn người dùng cục bộ (ví dụ: C:\Users\anhkhoacod123...) — tốt nhất loại bỏ hoặc thêm `.gitignore` để tránh rò rỉ thông tin môi trường phát triển người dùng.
