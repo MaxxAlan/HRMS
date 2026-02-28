@@ -22,7 +22,7 @@ public class HRMS {
         while (true) {            
             System.out.println("\n===Main Menu===");
             System.out.println("1. Employee Management");
-            System.out.println("2. Attendance Managemen");
+            System.out.println("2. Attendance Management");
             System.out.println("3. Salary Management");
             System.out.println("4. Reports");
             System.out.println("5. Exit");
@@ -31,14 +31,17 @@ public class HRMS {
             String choice = sc.nextLine();
             
             switch (choice) {
-                case "1": employeeMenu(); break;
+                case "1": 
+                    employeeMenu(); 
+                    break;
                 //case "2": attendanceMenu(); break;
                 //case "3": salaryMenu(); break;    
                 //case "4": reportsMenu(); break;    
                 case "5": 
                     System.out.println("End");
                     return;
-                default: System.out.println("Invalid");
+                default: 
+                    System.out.println("Invalid");
             }
            
         }
@@ -58,12 +61,23 @@ public class HRMS {
             String choice = sc.nextLine();
             
             switch (choice) {
-                case "1": addEmployee(); break;
-                case "2": updateEmployee(); break;
-                case "3": removeEmployee(); break;
-                case "4": viewAllEmployees(); break;
-                case "5": searchEmployee(); break;
-                case "6": return; 
+                case "1": 
+                    addEmployee(); 
+                    break;
+                case "2": 
+                    updateEmployee(); 
+                    break;
+                case "3": 
+                    removeEmployee(); 
+                    break;
+                case "4": 
+                    viewAllEmployees(); 
+                    break;
+                case "5": 
+                    searchEmployee(); 
+                    break;
+                case "6": 
+                    return; 
                 default:
                     System.out.println("Invalid choose again");
             }
@@ -151,7 +165,7 @@ public class HRMS {
         String saveChoice = sc.nextLine();
         
         if(saveChoice.equals("1")){
-            employeeList.add(newEmployee);
+            employeeList.add(newEmployee);  //Important: có line này thì mới save đc 
             System.out.println("Employee add successfully");
         }else{
             System.out.println("Cancel");
@@ -284,7 +298,8 @@ public class HRMS {
             for (Employee emp : employeeList) {
                 if(emp.isActive() && emp.getName().contains(searchName)){
                                                    //contains:tìm kiếm chuỗi trong List
-                    System.out.println(emp.getId() + "-" + emp.getName()
+                    System.out.println(emp.getId() 
+                                        + "-" + emp.getName()
                                         + "-" + emp.getDepartment());
                     count++;
                 }
@@ -293,6 +308,8 @@ public class HRMS {
         }
         
     }
+    
+    
     
 }
 
