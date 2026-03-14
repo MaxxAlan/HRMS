@@ -1,101 +1,273 @@
-# HRMS — Hệ thống quản lý nhân sự
+# 📋 HRMS — Human Resource Management System
 
-Mô tả ngắn
-- HRMS — Phần mềm quản lý nhân lực công ty. (Repo: MaxxAlan/HRMS)
-- Ngôn ngữ chính: Java (100%)
+> **Project môn học | Java OOP**  
+> Hệ thống quản lý nhân sự chạy trên console, hỗ trợ quản lý nhân viên, chấm công, tính lương và báo cáo.
 
-Tóm tắt trạng thái hiện tại
-- Loại dự án: Ứng dụng console Java (NetBeans / Ant project).
-- Java target: 1.8 (xác định từ `nbproject/project.properties`).
-- Build: Ant / NetBeans (file: `HRMSProject/build.xml`, `nbproject/`).
-- Trạng thái tổng quát: Đã có khung cơ bản của backend console và mô hình dữ liệu; tính năng chính chấp nhận đầu vào qua console. Nhiều module trợ giúp, ngoại lệ, và persistence chưa triển khai đầy đủ.
-  - Giai đoạn: Development (proto / working prototype trên console).
-  - Không có CI, không có tests tự động (chưa thấy `src/test` thực thi).
-  - Chưa có cơ chế lưu trữ dữ liệu (hiện tại lưu trong memory: `List<Employee>`).
+---
 
-Bằng chứng từ mã nguồn (những file chính đã kiểm tra)
-- Project config
-  - `HRMSProject/build.xml` (Ant wrapper cho NetBeans)
-  - `HRMSProject/nbproject/project.properties` (javac.source = 1.8)
-- Entry point
-  - `HRMSProject/src/hrms/HRMS.java`
-    - Menu console: Employee Management hiện hoạt. Các menu Attendance / Salary / Reports được comment out.
-    - Lưu dữ liệu trong memory: `private static List<Employee> employeeList = new ArrayList<>();`
-    - Hỗ trợ: Add, Update, Remove (deactivate), View, Search nhân viên.
-- Models
-  - `HRMSProject/src/hrms/models/Employee.java` (abstract, fields + attendance list, toString, countWorkingDays, addAttendance, abstract calculateSalary)
-  - `HRMSProject/src/hrms/models/Attendance.java` (date, status, overtimeHours, validation simple)
-  - `HRMSProject/src/hrms/models/FullTimeEmployee.java` (implements calculateSalary)
-  - `HRMSProject/src/hrms/models/PartTimeEmployee.java` (implements calculateSalary)
-- Exceptions (chưa triển khai nội dung)
-  - `HRMSProject/src/hrms/exceptions/AttendanceException.java` (empty class)
-  - `HRMSProject/src/hrms/exceptions/InvalidEmployeeException.java` (empty class)
-- Utils (chưa triển khai)
-  - `HRMSProject/src/hrms/utils/ConsoleUI.java` (empty)
-  - `HRMSProject/src/hrms/utils/FileHandler.java` (empty)
-  - `HRMSProject/src/hrms/utils/Validator.java` (empty)
+## 📁 Cấu trúc project
 
-Những gì đã hoàn thành (chi tiết)
-- Mô hình dữ liệu cơ bản: Employee (abstract), Attendance, FullTimeEmployee, PartTimeEmployee — có logic tính lương cơ bản dựa trên overtime và absence.
-- Giao diện console cơ bản (`HRMS.java`) cho quản lý nhân viên:
-  - Thêm nhân viên (Full-time / Part-time), validate đơn giản (id trống, trùng, salary > 0, ngày join parse).
-  - Cập nhật department/jobTitle.
-  - Deactivate nhân viên thay vì xóa.
-  - Xem danh sách nhân viên (chỉ active).
-  - Tìm kiếm theo tên.
-- Có cấu hình project NetBeans/Ant để build.
-
-Những phần còn thiếu / cần hoàn thiện
-- Persistence: lưu dữ liệu vào file/DB (hiện chỉ lưu trong memory).
-- Attendance UI & management: menu attendance được comment — cần implement (thêm điểm danh, sửa, xóa, import/export).
-- Salary management UI: menu salary được comment — cần implement xuất phiếu lương, lịch sử lương.
-- Reports: báo cáo tổng hợp (tổng lương, chấm công, vắng nhiều...) chưa có.
-- Exception classes: `AttendanceException`, `InvalidEmployeeException` nên extend `Exception` hoặc `RuntimeException` và chứa logic.
-- Utils: `ConsoleUI`, `FileHandler`, `Validator` hiện rỗng — cần triển khai để tái sử dụng.
-- Tests: không thấy test unit/integration — cần thêm test (JUnit).
-- CI/CD: không thấy `.github/workflows` — đề xuất thêm pipeline build + test.
-- Documentation/API: thiếu docs, hướng dẫn cài đặt chi tiết, file `.env.example` nếu cần cấu hình DB.
-- CODEOWNERS / quy trình duyệt PR: không thấy file -> chưa có người duyệt được chỉ định.
-
-Ưu tiên công việc tiếp theo (gợi ý)
-1. Triển khai persistence tối thiểu:
-   - Option A: Lưu file JSON/CSV thông qua `FileHandler`.
-   - Option B: Kết nối DB (H2 or SQLite for local, hoặc MySQL/Postgres).
-2. Triển khai Attendance management (menu và CRUD).
-3. Hoàn thiện Salary management & generate payslip.
-4. Viết unit tests cho business logic (calculateSalary, countWorkingDays, validator).
-5. Thiết lập CI (GitHub Actions): build → test → (optional) code style.
-6. Thêm CODEOWNERS để xác định người duyệt PR.
-7. Refactor utils và xử lý exceptions.
-
-Hướng dẫn build & chạy (dựa trên cấu trúc hiện có)
-- Yêu cầu:
-  - Java JDK 8
-  - Ant (nếu dùng build.xml), hoặc mở bằng NetBeans 8+/NetBeans 11+ (project NetBeans)
-- Build & chạy bằng Ant:
-  - Từ thư mục `HRMSProject`:
-    - Build: `ant` (hoặc `ant jar`)
-    - Chạy (nếu IDE không dùng Compile-on-Save): `ant -f build.xml run`
-  - Hoặc mở project bằng NetBeans và nhấn Run.
-- Chạy trực tiếp (IDE):
-  - Mở `HRMSProject` trong NetBeans, run project; main class: `hrms.HRMS`.
-
-Gợi ý về quy trình duyệt mã (Ai duyệt)
-- Hiện tại repo không có `.github/CODEOWNERS` hay file tương tự => không có approver được chỉ định tự động.
-- Đề xuất mẫu cơ bản (tùy chỉnh theo team):
-  - Tech Lead: người chịu trách nhiệm code-review chính.
-  - QA: kiểm thử trước khi merge vào `main`.
-  - Quy tắc merge: ít nhất 1 approver, CI pass, không merge trực tiếp vào `main` (dùng branch + PR).
-- Mẫu file CODEOWNERS (ví dụ đề xuất) — thêm vào `.github/CODEOWNERS` hoặc `docs/`:
-  - Người duyệt mặc định: @MaxxAlan (owner). Thay thế bằng account GitHub thực tế của Tech Lead/QA khi có.
-
-Gợi ý về file CODEOWNERS (mẫu)
 ```
-# Các owner/approver mặc định
-# Format: <pattern> <owner>
-# Ví dụ: toàn repo do @MaxxAlan duyệt; thay bằng team hoặc người cụ thể nếu cần
-* @MaxxAlan
+hrms/
+├── src/
+│   ├── hrms/
+│   │   ├── HRMS.java                  ← Main class, toàn bộ menu console
+│   │   ├── models/
+│   │   │   ├── Employee.java          ← Abstract class (lớp cha)
+│   │   │   ├── Attendance.java        ← Chấm công
+│   │   │   ├── FullTimeEmployee.java  ← Nhân viên toàn thời gian
+│   │   │   └── PartTimeEmployee.java  ← Nhân viên bán thời gian
+│   │   └── utils/
+│   │       ├── Validator.java         ← Kiểm tra dữ liệu đầu vào
+│   │       └── FileManager.java       ← Đọc/ghi file CSV
+└── data/                              ← Tự tạo khi chạy lần đầu
+    ├── employees.csv
+    └── attendance.csv
 ```
 
-Kiểm tra bảo mật & privacy
-- Trong `nbproject/private/private.properties` có đường dẫn người dùng cục bộ (ví dụ: C:\Users\anhkhoacod123...) — tốt nhất loại bỏ hoặc thêm `.gitignore` để tránh rò rỉ thông tin môi trường phát triển người dùng.
+---
+
+## ▶️ Cách chạy
+
+### Trong NetBeans / IntelliJ
+1. Mở project, đảm bảo cấu trúc package đúng như trên
+2. Chạy file `HRMS.java` (chứa `main()`)
+
+### Compile thủ công (Terminal)
+```bash
+# Từ thư mục gốc chứa src/
+javac -d out -sourcepath src src/hrms/HRMS.java
+
+# Chạy
+java -cp out hrms.HRMS
+```
+
+---
+
+## 🖥️ Giao diện menu
+
+```
+======================================
+      HUMAN RESOURCE MANAGEMENT
+======================================
+1. Manage Employees
+2. Attendance Management
+3. Salary Management
+4. Reports
+5. Exit
+--------------------------------------
+Choose an option: _
+```
+
+---
+
+## ✅ Tính năng đã hoàn thiện
+
+### 1. Manage Employees
+| Task | Mô tả | Business Rule |
+|------|-------|---------------|
+| Add Employee | Nhập ID, tên, phòng ban, chức danh, loại NV, ngày vào, lương | BR1, BR2, BR11 |
+| Update Employee | Sửa phòng ban, chức danh, lương (bỏ trống = giữ nguyên) | BR2, BR11 |
+| Remove Employee | Soft delete — đánh dấu `active = false`, không xóa hẳn | BR10 |
+| View All Employees | Hiển thị danh sách NV đang active dạng bảng | — |
+| Search Employees | Tìm theo tên / phòng ban / chức danh | — |
+
+**Ví dụ Add Employee:**
+```
+----------- ADD EMPLOYEE -----------
+Employee ID: E01
+Full Name: Nguyen Van An
+Department: IT
+Job Title: Software Engineer
+Type: Full-time
+Date of Joining: 01/03/2023
+Basic Salary: 12000000
+[1] Save  [2] Cancel
+→ Employee added successfully.
+```
+
+**Ví dụ View All Employees:**
+```
+--------------- EMPLOYEE LIST -----------------------------------------------
+ID       Name                 Department      Job Title              Salary (VND)
+----------------------------------------------------------------------------
+E01      Nguyen Van An        IT              Software Engineer      12,000,000
+E02      Tran Thi Hoa         HR              HR Officer             10,000,000
+----------------------------------------------------------------------------
+Press ENTER to return...
+```
+
+---
+
+### 2. Attendance Management
+| Task | Mô tả | Business Rule |
+|------|-------|---------------|
+| Record Attendance | Ghi chấm công theo ngày: Present / Absent / Leave + giờ OT | BR3, BR4, BR5 |
+| Update Attendance | Sửa trạng thái hoặc giờ OT của ngày đã có | BR4, BR5 |
+| View Attendance History | Hiển thị toàn bộ lịch sử chấm công của 1 NV | BR6 |
+
+**Ví dụ Record Attendance:**
+```
+----------- RECORD ATTENDANCE -----------
+Employee ID: E01
+Date: 15/12/2025
+Status: Present
+Overtime Hours: 2
+→ Attendance recorded successfully.
+```
+
+**Ví dụ View Attendance History:**
+```
+Employee: Nguyen Van An (E01)
+-----------------------------------------
+Date          Status      Giờ OT
+-----------------------------------------
+15/12/2025    Present     2 hours
+16/12/2025    Absent      0 hours
+-----------------------------------------
+Press ENTER to return...
+```
+
+---
+
+### 3. Salary Management
+| Task | Mô tả | Business Rule |
+|------|-------|---------------|
+| Calculate Monthly Salary | Tính lương theo tháng/năm cụ thể | BR7, BR8, BR9, BR10 |
+| View Salary Details | Hiển thị chi tiết: lương cơ bản + OT + khấu trừ | BR7 |
+| Generate Salary Report | Bảng lương tất cả NV active trong tháng | BR13 |
+
+**Công thức tính lương (BR7):**
+```
+Tổng lương = Lương cơ bản
+           + (Số giờ OT × Đơn giá OT)
+           - (Số ngày vắng × 100,000)
+```
+
+| Loại NV | Đơn giá OT (BR8) | Trừ vắng (BR9) |
+|---------|-----------------|----------------|
+| Full-time | 80,000 VND/giờ | 100,000 VND/ngày |
+| Part-time | 50,000 VND/giờ | 100,000 VND/ngày |
+
+**Ví dụ Calculate Salary:**
+```
+----------- CALCULATE SALARY -----------
+Employee ID: E01
+Month: 12 / Year: 2025
+→ Salary calculated successfully.
+   Employee       : Nguyen Van An
+   Total Working Days : 22
+   Overtime Hours     : 10
+   Absence Days       : 1
+   Total Salary       : 12,700,000 VND
+```
+
+---
+
+### 4. Reports
+| Task | Mô tả | Business Rule |
+|------|-------|---------------|
+| Low Attendance | Danh sách NV vắng nhiều hơn ngưỡng trong tháng | BR12 |
+| Highest Paid | Xếp hạng NV theo tổng lương tháng (giảm dần) | BR13 |
+
+**Ví dụ Low Attendance (ngưỡng mặc định = 3 ngày):**
+```
+----------- LOW ATTENDANCE REPORT -----------
+E02      Tran Thi Hoa         5 days
+--------------------------------------------
+Press ENTER to return...
+```
+
+**Ví dụ Highest Paid:**
+```
+----------- HIGHEST PAID EMPLOYEES -----------
+Rank  ID       Name                    Total Salary (VND)
+1     E01      Nguyen Van An              12,700,000
+2     E02      Tran Thi Hoa              10,000,000
+----------------------------------------------
+Press ENTER to return...
+```
+
+---
+
+## 💾 File I/O (Milestone 4)
+
+Dữ liệu được **tự động load** khi khởi động và **tự động lưu** khi thoát (chọn Exit).
+
+### employees.csv
+```
+id,name,department,jobTitle,joinDate,basicSalary,active,type
+E01,Nguyen Van An,IT,Software Engineer,01/03/2023,12000000.0,true,Full-time
+E02,Tran Thi Hoa,HR,HR Officer,15/06/2022,10000000.0,true,Part-time
+```
+
+### attendance.csv
+```
+employeeId,date,status,overtimeHours
+E01,15/12/2025,Present,2
+E01,16/12/2025,Absent,0
+E02,15/12/2025,Present,0
+```
+
+---
+
+## 🏗️ Thiết kế OOP
+
+### Class Diagram (tóm tắt)
+```
+          «abstract»
+          Employee
+         /         \
+FullTimeEmployee  PartTimeEmployee
+       (uses)
+      Attendance
+```
+
+### Encapsulation
+- Tất cả thuộc tính của `Employee` và `Attendance` đều là `private`
+- Truy cập qua Getter/Setter có kiểm tra hợp lệ
+
+### Inheritance
+- `FullTimeEmployee` và `PartTimeEmployee` đều `extends Employee`
+- Dùng `super(...)` trong constructor để tái sử dụng code của lớp cha
+
+### Polymorphism
+- `calculateSalary()` và `calculateSalaryInMonth()` là `abstract` ở `Employee`
+- Mỗi lớp con Override theo cách tính riêng (khác `OVERTIME_RATE`)
+- Gọi `emp.calculateSalaryInMonth(...)` → Java tự chọn đúng phiên bản
+
+### Collections sử dụng
+| Collection | Nơi dùng | Mục đích |
+|-----------|---------|---------|
+| `List<Employee>` | `HRMS.java` | Lưu danh sách NV theo thứ tự |
+| `Map<String, Employee>` | `HRMS.java` | Tìm NV theo ID nhanh O(1) |
+| `Set<String> usedIds` | `HRMS.java` | Kiểm tra ID trùng BR1 — O(1) |
+| `List<Attendance>` | `Employee.java` | Lưu lịch sử chấm công |
+| `Map<String, Attendance>` | `Employee.java` | Kiểm tra trùng ngày BR4 — O(1) |
+| `Set<String> validStatus` | `Attendance.java` | Validate status hợp lệ BR5 |
+| `Map<Employee, Double>` | `HRMS.java` | Sort lương cao nhất BR13 |
+
+### Exception Handling
+- `try-catch` bao quanh toàn bộ parse ngày, parse số
+- Khi đọc file: dòng nào lỗi → in cảnh báo + bỏ qua → **không crash chương trình**
+- `throw new IllegalArgumentException` trong Setter khi dữ liệu không hợp lệ
+
+---
+
+## 📐 Business Rules
+
+| Rule | Mô tả | Xử lý ở |
+|------|-------|---------|
+| BR1 | Employee ID phải unique, không thay đổi được | `usedIds` (Set) + không có `setId()` |
+| BR2 | Tên và phòng ban không được rỗng | `Validator.isValidName/Department()` |
+| BR3 | NV phải tồn tại trước khi chấm công | `employeeMap.get(id)` kiểm tra null |
+| BR4 | Mỗi ngày chỉ chấm công 1 lần / NV | `attendanceMap.containsKey(dateKey)` |
+| BR5 | Status: Present / Absent / Leave | `Set<String> validStatus` trong `Attendance` |
+| BR6 | Ngày làm tính từ bản ghi chấm công | `countWorkingDaysInMonth()` dùng `Calendar` |
+| BR7 | Lương = Cơ bản + OT − Vắng | `calculateSalaryInMonth()` |
+| BR8 | OT: 80k (Full-time), 50k (Part-time) | Hằng số `OVERTIME_RATE` trong mỗi lớp con |
+| BR9 | Trừ 100k/ngày vắng | Hằng số `ABSENCE_DEDUCTION` |
+| BR10 | Chỉ tính lương NV đang active | `if (!isActive()) return 0` |
+| BR11 | Validate toàn bộ input | `Validator.java` |
+| BR12 | Low attendance: vắng > ngưỡng/tháng | `countAbsentDaysInMonth() > limit` |
+| BR13 | Highest paid theo tổng lương tháng | `LinkedHashMap` + lambda sort giảm dần |

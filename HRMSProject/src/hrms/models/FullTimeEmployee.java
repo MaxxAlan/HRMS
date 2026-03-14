@@ -5,11 +5,12 @@ import java.util.Date;
 public class FullTimeEmployee extends Employee {
     //extends: tính kế thừa
     //nhận tất cả thuộc tính, phương thức từ class Employee
-    //có thể thêm thuộc tính mới (nếu muốn)
+    
 
+    // BR8: Full-time làm thêm 1 giờ = 80,000 VND
     private static final double OVERTIME_RATE = 80000;
-    //tương tự như const (hằng số) trg C
-    //mọi nhân viên FullTime làm thêm đều đc 80k, ko bao đổi 
+    
+    // BR9: Vắng 1 ngày bị trừ 100,000 VND
     private static final double ABSENCE_DEDUCTION = 100000;
 
     //constructor
@@ -27,17 +28,39 @@ public class FullTimeEmployee extends Employee {
         //Tính giờ làm thêm + ngày nghỉ
         int overtimeHours=0;
         int absentDays=0;
-        for (Attendance x : getAttendanceList()) {
-            if("Present".equals(x.getStatus())){
-                overtimeHours += x.getOvertimeHours();
-            }else if("Absent".equals(x.getStatus())){
+        
+        for (Attendance att : getAttendanceList()) {
+            if("Present".equals(att.getStatus())){
+                overtimeHours += att.getOvertimeHours();
+            }else if("Absent".equals(att.getStatus())){
                 absentDays++;
             }
         }
         
-        return getBasicSalary() 
+        return basicSalary 
                 + (overtimeHours*OVERTIME_RATE) 
                 - (absentDays*ABSENCE_DEDUCTION);
     }
+    
+    // Tính lương trong tháng/năm cụ thể (BR13)
+    @Override
+    public double calculateSalaryInMonth(int month, int year){
+        if(!isActive()) return 0;   // BR10
+        
+        // Gọi phương thức đếm từ lớp cha (Employee)
+        int overtimeHours = countOvertimeHoursInMonth(month, year);
+        int absentDays = countAbsentDaysInMonth(month, year);
+         
+        return basicSalary 
+                + (overtimeHours*OVERTIME_RATE) 
+                - (absentDays*ABSENCE_DEDUCTION);
+    }
+    
+    @Override
+    public String getEmployeeType(){
+        return "Full-time";
+    }
+    
+
     
 }
